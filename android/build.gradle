@@ -10,10 +10,11 @@ buildscript {
     if (project == rootProject) {
         repositories {
             google()
+            mavenCentral()
         }
 
         dependencies {
-            classpath 'com.android.tools.build:gradle:1.3.1'
+            classpath 'com.android.tools.build:gradle:8.1.1'
         }
     }
 }
@@ -21,12 +22,19 @@ buildscript {
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion safeExtGet('compileSdkVersion', 26)
-    buildToolsVersion safeExtGet('buildToolsVersion', '26.0.3')
+    compileSdkVersion safeExtGet('compileSdkVersion', 34)
+    buildToolsVersion safeExtGet('buildToolsVersion', '34.0.0')
+
+    // AGP 8 requires the namespace here and no longer allows `package` in
+    // the manifest. Guard it so the module still builds on older AGP that
+    // predates the `namespace` DSL.
+    if (project.android.hasProperty("namespace")) {
+        namespace "net.no_mad.tts"
+    }
 
     defaultConfig {
-        minSdkVersion safeExtGet('minSdkVersion', 16)
-        targetSdkVersion safeExtGet('targetSdkVersion', 26)
+        minSdkVersion safeExtGet('minSdkVersion', 21)
+        targetSdkVersion safeExtGet('targetSdkVersion', 34)
         versionCode 1
         versionName "1.0"
     }
