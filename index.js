@@ -120,7 +120,16 @@ class Tts extends NativeEventEmitter {
   }
 
   removeEventListener(type, handler) {
-    this.removeListener(type, handler);
+    // Modern React Native's NativeEventEmitter removed removeListener;
+    // callers are expected to call .remove() on the subscription returned
+    // by addListener/addEventListener. Keep this method working on both
+    // old and new RN: use removeListener when present, otherwise fall back
+    // to removing all listeners for the event type.
+    if (typeof this.removeListener === 'function') {
+      this.removeListener(type, handler);
+    } else {
+      this.removeAllListeners(type);
+    }
   }
 }
 
